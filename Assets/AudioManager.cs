@@ -1,37 +1,39 @@
 using System;
+using System.Linq;
 using UnityEngine;
+
 public class AudioManager : MonoBehaviour
 {
     [Serializable]
     private class AudioClip
     {
         public string name;
-        public AudioSource clip;
+        public string[] tags;
+        public AudioSource audio;
     }
 
-    [SerializeField] private AudioClip[] musicClips;
-    [SerializeField] private AudioClip[] SFXClips;
+    [SerializeField]
+    private AudioClip[] audioClips;
 
-    public void PlayMusic(string name)
+    public void Play(string name)
     {
-        Array.Find(musicClips, sound => sound.name == name).clip.Play();
+        Array.Find(audioClips, audioClip => audioClip.name == name).audio.Play();
     }
 
-    public void StopMusic(string name)
+    public void PlayAtPoint(string name, Vector3 point)
     {
-        Array.Find(musicClips, sound => sound.name == name).clip.Stop();
+        AudioSource.PlayClipAtPoint(Array.Find(audioClips, audioClip => audioClip.name == name).audio.clip, point);
     }
 
-    public void StopAllMusic()
+    public void PlayRandomWithTag(string tag)
     {
-        foreach (AudioClip musicClip in musicClips)
-        {
-            musicClip.clip.Stop();
-        }
+        AudioClip[] tmp = Array.FindAll<AudioClip>(audioClips, audioClip => audioClip.tags.Contains(tag));
+        int index = UnityEngine.Random.Range(0, tmp.Length);
+        tmp[index].audio.Play();
     }
 
-    public void PlaySFX(string name)
+    public void Stop(string name)
     {
-        Array.Find(SFXClips, sound => sound.name == name).clip.Play();
+        Array.Find(audioClips, audioClip => audioClip.name == name).audio.Stop();
     }
 }
