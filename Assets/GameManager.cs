@@ -1,6 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -8,16 +9,44 @@ public class GameManager : MonoBehaviour
     public GameObject hitParticle;
     private AudioManager audioManager;
 
-    public static GameObject player, enemy;
+    public static Fighter player, enemy;
+
+    public TextMeshProUGUI playerName;
+    public Slider playerHealth;
+    public Slider playerStamina;
+
+    public TextMeshProUGUI enemyName;
+    public Slider enemyHealth;
+    public Slider enemyStamina;
 
     void Start()
     {
         audioManager = GetComponent<AudioManager>();
+
+        playerName.text = player.name;
+        enemyName.text = enemy.name;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        
+        HealthUpdate();
+        StaminaUpdate();
+    }
+
+    public void HealthUpdate()
+    {
+        playerHealth.value = player.health;
+        enemyHealth.value = enemy.health;
+    }
+
+    public void StaminaUpdate()
+    {
+        playerStamina.value = player.stamina;
+        enemyStamina.value = enemy.stamina;
+    }
+
+    public void AttackRegistered()
+    {
     }
 
     public void HitRegistered(Vector3 contactPoint)

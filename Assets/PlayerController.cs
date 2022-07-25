@@ -1,3 +1,4 @@
+using Fighting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -16,27 +17,28 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
 
         if (horizontalInput < 0)
         {
             if (pressedHorizontalAxis && Time.time > pressDelayTimer)
             {
+                float verticalInput = Input.GetAxis("Vertical");
+
                 switch (verticalInput)
                 {
                     case 0:
                         {
-                            fighter.Block(FighterBlock.BodyBlock);
+                            fighter.TryToBlock(Block.BodyBlock);
                             break;
                         }
                     case > 0:
                         {
-                            fighter.Block(FighterBlock.HeadBlock);
+                            fighter.TryToBlock(Block.HeadBlock);
                             break;
                         }
                     case < 0:
                         {
-                            fighter.Block(FighterBlock.LegBlock);
+                            fighter.TryToBlock(Block.LegBlock);
                             break;
                         }
                 }
@@ -54,21 +56,21 @@ public class PlayerController : MonoBehaviour
         {
             if (pressedHorizontalAxis && Time.time < pressDelayTimer)
             {
-                fighter.Move(-1);
+                fighter.Movement(-1);
             }
             else
             {
                 pressedHorizontalAxis = false;
-                fighter.Move(horizontalInput);
+                fighter.Movement(horizontalInput);
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.B)) fighter.AddMoveToQueue(FighterMove.LegKick);
-        if (Input.GetKeyDown(KeyCode.N)) fighter.AddMoveToQueue(FighterMove.BodyKick);
-        if (Input.GetKeyDown(KeyCode.M)) fighter.AddMoveToQueue(FighterMove.HeadKick);
+        if (Input.GetKeyDown(KeyCode.B)) fighter.AddMoveToQueue(Move.LegKick);
+        if (Input.GetKeyDown(KeyCode.N)) fighter.AddMoveToQueue(Move.BodyKick);
+        if (Input.GetKeyDown(KeyCode.M)) fighter.AddMoveToQueue(Move.HeadKick);
 
-        if (Input.GetKeyDown(KeyCode.G)) fighter.AddMoveToQueue(FighterMove.LegPunch);
-        if (Input.GetKeyDown(KeyCode.H)) fighter.AddMoveToQueue(FighterMove.BodyPunch);
-        if (Input.GetKeyDown(KeyCode.J)) fighter.AddMoveToQueue(FighterMove.HeadPunch);
+        if (Input.GetKeyDown(KeyCode.G)) fighter.AddMoveToQueue(Move.LegPunch);
+        if (Input.GetKeyDown(KeyCode.H)) fighter.AddMoveToQueue(Move.BodyPunch);
+        if (Input.GetKeyDown(KeyCode.J)) fighter.AddMoveToQueue(Move.HeadPunch);
     }
 }
