@@ -35,11 +35,11 @@ public class Fighter : MonoBehaviour
     private Block blockInExecution;
     private bool isBlocking;
 
-    void Start()
+    private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        if (gameObject.CompareTag("Player"))
+        if (CompareTag("Player"))
         {
             GameManager.player = this;
         }
@@ -50,10 +50,13 @@ public class Fighter : MonoBehaviour
 
         audioManager = GetComponent<AudioManager>();
         fighterAnimator = GetComponent<Animator>();
+
         fighterMoveStats = new Stats();
-
         movesQueue = new Queue<Move>();
+    }
 
+    void Start()
+    {
         fighterAnimator.SetFloat("MoveSpeedMultiplier", agility);
         fighterMoveStats.AdjustDamage(strength);
     }
@@ -79,8 +82,11 @@ public class Fighter : MonoBehaviour
 
     void FixedUpdate()
     {
-        stamina += Time.deltaTime * 10 * endurance;
-        if (stamina > 100) stamina = 100;
+        if (!gameManager.fightEnded)
+        {
+            stamina += Time.deltaTime * 10 * endurance;
+            if (stamina > 100) stamina = 100;
+        }
     }
 
     public void AddMoveToQueue(Move move)
@@ -153,7 +159,7 @@ public class Fighter : MonoBehaviour
 
         if (blockInExecution == attackMove.block)
         {
-            stamina += 10 * endurance;
+            stamina += 10;
             fighterAnimator.SetTrigger(blockInExecution.ToString());
             gameManager.BlockRegistered(contactPoint);
         }
@@ -164,6 +170,49 @@ public class Fighter : MonoBehaviour
             fighterAnimator.Play("Idle", 0);
             fighterAnimator.SetTrigger(attackMove.trigger);
             gameManager.HitRegistered(contactPoint);
+
+            if (health <= 0)
+            {
+                Knockdown();
+                gameManager.FightEnd(tag);
+            }
+        }
+    }
+
+    public void Knockdown()
+    {
+        fighterAnimator.SetTrigger("Knockdown");
+        Freeze();
+    }
+
+    public void Celebration()
+    {
+        fighterAnimator.SetTrigger("Celebration");
+    }
+
+    public void Freeze()
+    {
+        fighterAnimator.SetFloat("Movement", 0);
+
+        if (CompareTag("Player"))
+        {
+            GetComponent<PlayerController>().enabled = false;
+        }
+        else
+        {
+            GetComponent<AIController>().enabled = false;
+        }
+    }
+
+    public void Unfreeze()
+    {
+        if (CompareTag("Player"))
+        {
+            GetComponent<PlayerController>().enabled = true;
+        }
+        else
+        {
+            GetComponent<AIController>().enabled = true;
         }
     }
 
@@ -172,7 +221,7 @@ public class Fighter : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Hitbox") && moveInExecution != Move.None && Time.time > attackDelayTimer)
+        if (other.CompareTag("Hitbox") && moveInExecution != Move.None && Time.time > attackDelayTimer && !gameManager.fightEnded)
         {
             attackDelayTimer = Time.time + attackDelayTime;
             other.GetComponentInParent<Fighter>().ProcessAttack(fighterMoveStats.Get(moveInExecution));

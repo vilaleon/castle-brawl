@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private float pressDelayTimer = 0f;
     private bool pressedHorizontalAxis;
 
-    void Start()
+    void Awake()
     {
         fighter = GetComponent<Fighter>();
     }
