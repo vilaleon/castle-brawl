@@ -7,25 +7,49 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public bool fightEnded;
+    [Serializable]
+    public class FighterObject
+    {
+        public string name;
+        public GameObject obj;
+    }
+
+    [SerializeField]
+    public FighterObject[] fighters;
+
+
+    public bool fightInProgress;
     public GameObject hitParticle;
     private AudioManager audioManager;
 
-    public static Fighter player, enemy;
+    public Fighter player, enemy;
 
-    public TextMeshProUGUI clockText;
-    private int clockSeconds = 30;
-
+    public GameObject fightUI;
+    public MenuUIHandler menuHandler;
+    
+    private int clockSeconds;
 
     public GameObject fightTextObject;
 
+    public TextMeshProUGUI clockText;
+
+    private int playerWins;
     public TextMeshProUGUI playerName;
+    public TextMeshProUGUI playerCounter;
     public Slider playerHealth;
     public Slider playerStamina;
 
+    private int enemyWins;
     public TextMeshProUGUI enemyName;
+    public TextMeshProUGUI enemyCounter;
     public Slider enemyHealth;
     public Slider enemyStamina;
+
+    private Vector3 startingPositionPlayer = new Vector3(13f, 0f, -1f);
+    private Quaternion startingRotationPlayer = Quaternion.Euler(0f, 90f, 0f);
+
+    private Vector3 startingPositionEnemy = new Vector3(17f, 0f, -1f);
+    private Quaternion startingRotationEnemy = Quaternion.Euler(0f, -90f, 0f);
 
     void Awake()
     {
@@ -34,20 +58,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        playerName.text = player.name;
-        enemyName.text = enemy.name;
-
-        player.Freeze();
-        enemy.Freeze();
-
-        StartCoroutine(CountdowCoroutine());
+        audioManager.Play("Ambient");
     }
-
 
     void FixedUpdate()
     {
-        HealthUpdate();
-        StaminaUpdate();
+        if (fightInProgress)
+        {
+            HealthUpdate();
+            StaminaUpdate();
+        }
     }
 
     public void HealthUpdate()
@@ -77,15 +97,18 @@ public class GameManager : MonoBehaviour
         audioManager.PlayRandomWithTag("block");
     }
 
-    public void FightEnd(string tag)
+    public void EndFight(string tag)
     {
-        fightEnded = true;
+        fightInProgress = false;
+        HealthUpdate();
+        StaminaUpdate();
 
         if (tag == "Player")
         {
             audioManager.Play("GameOver");
             fightTextObject.GetComponent<TextMeshProUGUI>().text = "Game Over";
             fightTextObject.GetComponent<CanvasGroup>().alpha = 1;
+            enemyCounter.text = (++enemyWins).ToString();
             enemy.Celebration();
         }
         else
@@ -93,15 +116,73 @@ public class GameManager : MonoBehaviour
             audioManager.Play("Victory");
             fightTextObject.GetComponent<TextMeshProUGUI>().text = "Victory";
             fightTextObject.GetComponent<CanvasGroup>().alpha = 1;
+            playerCounter.text = (++playerWins).ToString();
             player.Celebration();
         }
 
         enemy.Freeze();
         player.Freeze();
+
+        if (enemyWins == 1)
+        {
+            menuHandler.FightLost();
+        } else if (playerWins == 1)
+        {
+            menuHandler.FightWin();
+        } else
+        {
+            StartCoroutine(NewRoundCoroutine());
+        }
     }
 
+    public void StartFight()
+    {
+        fightUI.SetActive(true);
+        fightInProgress = true;
+        StartCoroutine(CountdowCoroutine());
+    }
+
+    public void FightEndedCleanup()
+    {
+        fightUI.SetActive(false);
+        audioManager.Play("Ambient");
+        audioManager.Stop("Combat");
+        Destroy(player.gameObject);
+        Destroy(enemy.gameObject);
+    }
+
+    public void FighterSelected(int index)
+    {
+        audioManager.Stop("Ambient");
+        audioManager.Play("Combat");
+
+        player = Instantiate(fighters[index].obj, startingPositionPlayer, startingRotationPlayer).GetComponent<Fighter>();
+        playerName.text = fighters[index].name;
+        player.tag = "Player";
+        playerCounter.text = (playerWins = 0).ToString();
+
+        enemy = Instantiate(fighters[0].obj, startingPositionEnemy, startingRotationEnemy).GetComponent<Fighter>();
+        enemyName.text = fighters[0].name;
+        enemyCounter.text = (enemyWins = 0).ToString();
+    }
+
+    IEnumerator NewRoundCoroutine()
+    {
+        yield return new WaitForSeconds(4);
+        
+        player.ResetStats();
+        player.transform.position = startingPositionPlayer;
+
+        enemy.ResetStats();
+        enemy.transform.position = startingPositionEnemy;
+
+        StartFight();
+    }
     IEnumerator CountdowCoroutine()
     {
+        clockSeconds = 30;
+        clockText.text = clockSeconds.ToString();
+
         audioManager.Play("Fight");
 
         fightTextObject.GetComponent<TextMeshProUGUI>().text = "3";
@@ -121,7 +202,7 @@ public class GameManager : MonoBehaviour
 
         bool endedByTime = false;
 
-        while (!fightEnded)
+        while (fightInProgress)
         {
             clockSeconds = clockSeconds - 1;
             clockText.text = clockSeconds.ToString();
@@ -145,10 +226,6 @@ public class GameManager : MonoBehaviour
 
             if (clockSeconds == 0)
             {
-                fightTextObject.GetComponent<Animation>().Play("FadeOut");
-                fightTextObject.GetComponent<TextMeshProUGUI>().text = "Time's Up!";
-                enemy.Freeze();
-                player.Freeze();
                 endedByTime = true;
                 break;
             }
@@ -160,11 +237,11 @@ public class GameManager : MonoBehaviour
         {
             if (player.health > enemy.health)
             {
-                FightEnd("Enemy");
+                EndFight("Enemy");
             }
             else
             {
-                FightEnd("Player");
+                EndFight("Player");
             }
         }
     }
