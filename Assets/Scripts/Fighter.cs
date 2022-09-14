@@ -21,7 +21,7 @@ public class Fighter : MonoBehaviour
 
     private GameManager gameManager;
     private AudioManager audioManager;
-    public Animator fighterAnimator;
+    private Animator fighterAnimator;
 
     private Stats fighterMoveStats;
     private Queue<Move> movesQueue;
@@ -114,7 +114,6 @@ public class Fighter : MonoBehaviour
 
             stamina -= fighterMoveStats.Get(move).stamina;
             fighterAnimator.SetTrigger(move.ToString());
-            gameManager.AttackRegistered();
         }
         else
         {

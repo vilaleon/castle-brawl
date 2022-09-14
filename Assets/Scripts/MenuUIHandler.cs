@@ -40,6 +40,36 @@ public class MenuUIHandler : MonoBehaviour
         menuAnimation = GetComponent<Animation>();
     }
 
+    public void BaseToSettings()
+    {
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(BaseToSettingsCoroutine());
+
+        IEnumerator BaseToSettingsCoroutine()
+        {
+            yield return new WaitForSeconds(1f);
+            ChangeSection("Settings");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
+    public void SettingsToBase()
+    {
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(SettingsToBaseCoroutine());
+
+        IEnumerator SettingsToBaseCoroutine()
+        {
+            yield return new WaitForSeconds(1f);
+            ChangeSection("Base");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
     public void BaseToTraining()
     {
         cameraAnimator.SetTrigger("BaseToTraining");

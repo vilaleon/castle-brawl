@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public FighterObject[] fighters;
 
-
     public bool fightInProgress;
     public GameObject hitParticle;
     private AudioManager audioManager;
@@ -30,7 +29,6 @@ public class GameManager : MonoBehaviour
     private int clockSeconds;
 
     public GameObject fightTextObject;
-
     public TextMeshProUGUI clockText;
 
     private int playerWins;
@@ -82,10 +80,6 @@ public class GameManager : MonoBehaviour
         enemyStamina.value = enemy.stamina;
     }
 
-    public void AttackRegistered()
-    {
-    }
-
     public void HitRegistered(Vector3 contactPoint)
     {
         Instantiate(hitParticle, contactPoint, hitParticle.transform.rotation);
@@ -95,6 +89,13 @@ public class GameManager : MonoBehaviour
     public void BlockRegistered(Vector3 contactPoint)
     {
         audioManager.PlayRandomWithTag("block");
+    }
+
+    public void StartFight()
+    {
+        fightUI.SetActive(true);
+        fightInProgress = true;
+        StartCoroutine(CountdowCoroutine());
     }
 
     public void EndFight(string tag)
@@ -123,23 +124,16 @@ public class GameManager : MonoBehaviour
         enemy.Freeze();
         player.Freeze();
 
-        if (enemyWins == 1)
+        if (enemyWins == 3)
         {
             menuHandler.FightLost();
-        } else if (playerWins == 1)
+        } else if (playerWins == 3)
         {
             menuHandler.FightWin();
         } else
         {
             StartCoroutine(NewRoundCoroutine());
         }
-    }
-
-    public void StartFight()
-    {
-        fightUI.SetActive(true);
-        fightInProgress = true;
-        StartCoroutine(CountdowCoroutine());
     }
 
     public void FightEndedCleanup()
