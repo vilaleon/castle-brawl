@@ -102,6 +102,53 @@ public class MenuUIHandler : MonoBehaviour
         }
     }
 
+    public void BaseToLobby()
+    {
+        cameraAnimator.SetTrigger("BaseToLobby");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(BaseToSelectionCoroutine());
+
+        IEnumerator BaseToSelectionCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("Lobby");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
+    public void LobbyToBase()
+    {
+        cameraAnimator.SetTrigger("LobbyToBase");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(BaseToSelectionCoroutine());
+
+        IEnumerator BaseToSelectionCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("Base");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
+    public void LobbyToFight()
+    {
+        cameraAnimator.SetTrigger("LobbyToFight");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(SelectionToFightCoroutine());
+
+        IEnumerator SelectionToFightCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("");
+            gameManager.StartFight();
+        }
+    }
+
     public void BaseToSelection()
     {
         cameraAnimator.SetTrigger("BaseToSelection");

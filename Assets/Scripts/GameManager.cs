@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public FighterObject[] fighters;
 
+    [SerializeField]
+    public FighterObject[] enemies;
+
     public bool fightInProgress;
     public GameObject hitParticle;
     private AudioManager audioManager;
@@ -155,8 +158,8 @@ public class GameManager : MonoBehaviour
         player.tag = "Player";
         playerCounter.text = (playerWins = 0).ToString();
 
-        enemy = Instantiate(fighters[0].obj, startingPositionEnemy, startingRotationEnemy).GetComponent<Fighter>();
-        enemyName.text = fighters[0].name;
+        enemy = Instantiate(enemies[0].obj, startingPositionEnemy, startingRotationEnemy).GetComponent<Fighter>();
+        enemyName.text = enemies[0].name;
         enemyCounter.text = (enemyWins = 0).ToString();
     }
 

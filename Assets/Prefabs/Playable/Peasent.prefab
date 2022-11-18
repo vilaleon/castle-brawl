@@ -595,6 +595,7 @@ GameObject:
   - component: {fileID: 3013622166084633784}
   - component: {fileID: -8714567143470354148}
   - component: {fileID: 3013622166084633781}
+  - component: {fileID: -4430643431274528066}
   m_Layer: 0
   m_Name: Peasent
   m_TagString: Untagged
@@ -694,7 +695,6 @@ MonoBehaviour:
   strength: 0.57
   agility: 1
   endurance: 2.25
-  fighterAnimator: {fileID: 0}
 --- !u!114 &-8714567143470354148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -719,6 +719,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91f0e006e346eae41b3cec1ef066386e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4430643431274528066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2671726072634875081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &2845889596871911544
 GameObject:
   m_ObjectHideFlags: 0
