@@ -1340,6 +1340,8 @@ GameObject:
   - component: {fileID: -1480301993356570280}
   - component: {fileID: 8975506162105626692}
   - component: {fileID: 8315885815843350422}
+  - component: {fileID: 4286679600213373628}
+  - component: {fileID: -7250654910369364708}
   m_Layer: 0
   m_Name: Blacksmith
   m_TagString: Untagged
@@ -1439,6 +1441,7 @@ MonoBehaviour:
   strength: 1.5
   agility: 0.912
   endurance: 1.5
+  isAI: 0
 --- !u!114 &-1480301993356570280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1479,6 +1482,45 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &4286679600213373628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092421649373620280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e255469b5e8bbff409c9644a8b3817e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 0
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
+--- !u!114 &-7250654910369364708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092421649373620280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dcc9e4bdcb521846a4c078470d4dbed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 3307316567948519672}
 --- !u!1 &8224504939906522249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,7 +1639,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5384310264625689397, guid: 342830531b677d444b7ec627ba496015, type: 3}
+  - {fileID: 2100000, guid: 204ac68f993a5804780bd8765c25a8d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -1,7 +1,8 @@
 using Fighting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     private Fighter fighter;
 
@@ -16,7 +17,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (NetworkManager.IsListening && !IsOwner) return;
+
         float horizontalInput = Input.GetAxis("Horizontal");
+
+        if (NetworkManager.IsListening && !NetworkManager.IsHost) horizontalInput = -horizontalInput;
 
         if (horizontalInput < 0)
         {

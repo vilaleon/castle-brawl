@@ -2,8 +2,9 @@ using Fighting;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Fighter : MonoBehaviour
+public class Fighter : NetworkBehaviour
 {
     #region Stats
     public float health = 100;
@@ -22,6 +23,7 @@ public class Fighter : MonoBehaviour
     private GameManager gameManager;
     private AudioManager audioManager;
     private Animator fighterAnimator;
+    public bool isAI;
 
     private Stats fighterMoveStats;
     private Queue<Move> movesQueue;
@@ -73,8 +75,15 @@ public class Fighter : MonoBehaviour
     {
         if (gameManager.fightInProgress)
         {
-            stamina += Time.deltaTime * 10 * endurance;
-            if (stamina > 100) stamina = 100;
+            if (NetworkManager.IsListening)
+            {
+                gameManager.ChangePlayerStaminaServerRpc(NetworkManager.IsHost, Time.deltaTime * 10 * endurance);
+            }
+            else
+            {
+                stamina += Time.deltaTime * 10 * endurance;
+                if (stamina > 100) stamina = 100;
+            }
         }
     }
 
@@ -112,8 +121,15 @@ public class Fighter : MonoBehaviour
                 moveInExecution = move;
             }
 
-            stamina -= fighterMoveStats.Get(move).stamina;
             fighterAnimator.SetTrigger(move.ToString());
+            if (NetworkManager.IsListening)
+            {
+                gameManager.ChangePlayerStaminaServerRpc(NetworkManager.IsHost, -fighterMoveStats.Get(move).stamina);
+            }
+            else
+            {
+                stamina -= fighterMoveStats.Get(move).stamina;
+            }
         }
         else
         {
@@ -141,32 +157,46 @@ public class Fighter : MonoBehaviour
         }
     }
 
-    private void ProcessAttack(Stats.Move attackMove)
+    public void ProcessAttack(Stats.Move attackMove)
     {
         Vector3 contactPoint = transform.position + new Vector3(0, attackMove.height, 0);
 
         if (blockInExecution == attackMove.block)
         {
-            stamina += 10;
+            if (NetworkManager.IsListening)
+            {
+                if (NetworkManager.IsHost)
+                {
+                    gameManager.ChangePlayerStaminaServerRpc(NetworkManager.IsHost, 10);
+                }
+                gameManager.BlockRegisteredClientRpc(contactPoint);
+            }
+            else
+            {
+                stamina += 10;
+                gameManager.BlockRegistered(contactPoint);
+            }
             fighterAnimator.SetTrigger(blockInExecution.ToString());
-            gameManager.BlockRegistered(contactPoint);
         }
         else
         {
-            health -= attackMove.damage;
             movesQueue.Clear();
             fighterAnimator.StopPlayback();
             fighterAnimator.Play("Idle", 0);
             fighterAnimator.SetTrigger(attackMove.trigger);
-            gameManager.HitRegistered(contactPoint);
-
-            if (health <= 0)
+            if (NetworkManager.IsListening)
             {
-                Knockdown();
-                gameManager.EndFight(tag);
+                gameManager.ChangePlayerHealthServerRpc(NetworkManager.IsHost, -attackMove.damage);
+                gameManager.HitRegisteredServerRpc(contactPoint);
+            }
+            else
+            {
+                health -= attackMove.damage;
+                gameManager.HitRegistered(contactPoint);
             }
         }
     }
+
 
     public void Knockdown()
     {
@@ -186,7 +216,7 @@ public class Fighter : MonoBehaviour
 
     public void Unfreeze()
     {
-        if (CompareTag("Player"))
+        if (!isAI)
         {
             GetComponent<PlayerController>().enabled = true;
         }
@@ -224,4 +254,6 @@ public class Fighter : MonoBehaviour
             other.GetComponentInParent<Fighter>().ProcessAttack(fighterMoveStats.Get(moveInExecution));
         }
     }
+
+    
 }
