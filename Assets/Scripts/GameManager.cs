@@ -28,6 +28,7 @@ public class GameManager : NetworkBehaviour
     public Fighter player, enemy;
 
     public GameObject fightUI;
+    public GameObject pauseMenu;
     public MenuUIHandler menuHandler;
 
     private int clockSeconds;
@@ -47,11 +48,25 @@ public class GameManager : NetworkBehaviour
     public Slider enemyHealth;
     public Slider enemyStamina;
 
+    public int totalWins = 0;
+    public int fighterIndex = 0;
     private Vector3 startingPositionPlayer = new Vector3(13f, 0f, -1f);
     private Quaternion startingRotationPlayer = Quaternion.Euler(0f, 90f, 0f);
 
     private Vector3 startingPositionEnemy = new Vector3(17f, 0f, -1f);
     private Quaternion startingRotationEnemy = Quaternion.Euler(0f, -90f, 0f);
+    
+    private Vector3 startingPositionPlayerVsMini = new Vector3(7, 0f, 6.5f);
+    private Quaternion startingRotationPlayerVsMini = Quaternion.Euler(0f, 90f, 0f);
+
+    private Vector3 startingPositionMini = new Vector3(11f, 0f, 6.5f);
+    private Quaternion startingRotationMini = Quaternion.Euler(0f, -90f, 0f);
+    
+    private Vector3 startingPositionPlayerVsKing = new Vector3(23.4f, 0f, 13.5f);
+    private Quaternion startingRotationPlayerVsKing = Quaternion.Euler(0f, 90f, 0f);
+
+    private Vector3 startingPositionKing = new Vector3(28f, 0f, 13.5f);
+    private Quaternion startingRotationKing = Quaternion.Euler(0f, -90f, 0f);
 
     public NetworkVariable<float> player1Health = new NetworkVariable<float>(100);
     public NetworkVariable<float> player2Health = new NetworkVariable<float>(100);
@@ -193,6 +208,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (playerWins == 3)
         {
+            totalWins++;
             menuHandler.FightWin();
         }
         else
@@ -275,16 +291,33 @@ public class GameManager : NetworkBehaviour
     {
         audioManager.Stop("Ambient");
         audioManager.Play("Combat");
+        fighterIndex = index;
+        if (totalWins == 1)
+        {
+            player = Instantiate(fighters[index].obj, startingPositionPlayerVsMini, startingRotationPlayerVsMini).GetComponent<Fighter>();
+            enemy = Instantiate(enemies[totalWins].obj, startingPositionMini, startingRotationMini).GetComponent<Fighter>();
+        }
+        else if (totalWins == 2)
+        {
+            player = Instantiate(fighters[index].obj, startingPositionPlayerVsKing, startingRotationPlayerVsKing).GetComponent<Fighter>();
+            enemy = Instantiate(enemies[totalWins].obj, startingPositionKing, startingRotationKing).GetComponent<Fighter>();
+        }
+        else
+        {
+            player = Instantiate(fighters[index].obj, startingPositionPlayer, startingRotationPlayer).GetComponent<Fighter>();
+            enemy = Instantiate(enemies[totalWins].obj, startingPositionEnemy, startingRotationEnemy).GetComponent<Fighter>();
+        }
 
-        player = Instantiate(fighters[index].obj, startingPositionPlayer, startingRotationPlayer).GetComponent<Fighter>();
         playerName.text = fighters[index].name;
         player.tag = "Player";
         playerCounter.text = (playerWins = 0).ToString();
 
-        enemy = Instantiate(enemies[0].obj, startingPositionEnemy, startingRotationEnemy).GetComponent<Fighter>();
+        
         enemy.isAI = true;
-        enemyName.text = enemies[0].name;
+        enemyName.text = enemies[totalWins].name;
         enemyCounter.text = (enemyWins = 0).ToString();
+        enemyHealth.maxValue = enemy.startHealth;
+        enemyStamina.maxValue = enemy.startStamina;
     }
 
     public void FighterSelectedMultiplayer()
@@ -299,6 +332,7 @@ public class GameManager : NetworkBehaviour
         GameObject player2 = Instantiate(fighters[indexP2].obj, startingPositionEnemy, startingRotationEnemy);
         player2.GetComponent<NetworkObject>().SpawnWithOwnership(1);
         enemy = player2.GetComponent<Fighter>();
+
 
         hostObjectId.Value = player1.GetComponent<Unity.Netcode.NetworkObject>().NetworkObjectId;
         playerObjectId.Value = player2.GetComponent<Unity.Netcode.NetworkObject>().NetworkObjectId;
@@ -333,17 +367,78 @@ public class GameManager : NetworkBehaviour
         else
         {
             player.ResetStats();
-            player.transform.position = startingPositionPlayer;
-
             enemy.ResetStats();
-            enemy.transform.position = startingPositionEnemy;
+
+            if (totalWins == 2)
+            {
+                player.transform.position = startingPositionPlayerVsKing;
+                enemy.transform.position = startingPositionKing;
+            }
+            else if (totalWins == 1)
+            {
+                player.transform.position = startingPositionPlayerVsMini;
+                enemy.transform.position = startingPositionMini;
+            }
+            else
+            {
+                player.transform.position = startingPositionPlayer;
+                enemy.transform.position = startingPositionEnemy;
+            }
         }
         StartFight();
     }
 
+    public void PauseGame()
+    {
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
+            pauseMenu.SetActive(false);
+        }
+        else
+        {
+            Time.timeScale = 0;
+            pauseMenu.SetActive(true);
+        }
+    }
+
+    public void CancelGame()
+    {
+        fightInProgress = false;
+        StopAllCoroutines();
+
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
+            pauseMenu.SetActive(false);
+            if (totalWins == 0) menuHandler.FightToBase();
+            if (totalWins == 1) menuHandler.MiniBossToBase();
+            if (totalWins == 2) menuHandler.BossToBase();
+            totalWins = 0;
+            return;
+        }
+
+        if (totalWins == 1) menuHandler.FightToBase();
+        if (totalWins == 2) menuHandler.MiniBossToBase();
+        if (totalWins == 3) menuHandler.BossToBase();
+        totalWins = 0;
+    }
+
+    public void LostGame()
+    {
+        fightInProgress = false;
+        StopAllCoroutines();
+
+        if (totalWins == 0) menuHandler.FightToBase();
+        if (totalWins == 1) menuHandler.MiniBossToBase();
+        if (totalWins == 2) menuHandler.BossToBase();
+        totalWins = 0;
+    }
+
     IEnumerator CountdowCoroutine()
     {
-        clockSeconds = 30;
+        fightTextObject.GetComponent<CanvasGroup>().alpha = 1;
+        clockSeconds = 45;
         clockText.text = clockSeconds.ToString();
 
         audioManager.Play("Fight");
@@ -460,6 +555,8 @@ public class GameManager : NetworkBehaviour
 
         playerCounter.text = (playerWins = 0).ToString();
         enemyCounter.text = (enemyWins = 0).ToString();
+        enemyHealth.maxValue = enemy.startHealth;
+        enemyStamina.maxValue = enemy.startStamina;
     }
 
     [ClientRpc]

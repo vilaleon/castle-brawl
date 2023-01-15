@@ -7,8 +7,11 @@ using Unity.Netcode;
 public class Fighter : NetworkBehaviour
 {
     #region Stats
-    public float health = 100;
-    public float stamina = 100;
+    public float startHealth = 100;
+    public float startStamina = 100;
+
+    public float health;
+    public float stamina;
 
     [Range(0.5f, 1.5f)]
     public float strength = 1f;
@@ -49,6 +52,8 @@ public class Fighter : NetworkBehaviour
     {
         fighterAnimator.SetFloat("MoveSpeedMultiplier", agility);
         fighterMoveStats.AdjustDamage(strength);
+        health = startHealth;
+        stamina = startStamina;
     }
 
     void Update()
@@ -82,9 +87,14 @@ public class Fighter : NetworkBehaviour
             else
             {
                 stamina += Time.deltaTime * 10 * endurance;
-                if (stamina > 100) stamina = 100;
+                if (stamina > startStamina) stamina = startStamina;
             }
         }
+    }
+
+    public Block GetBlock()
+    {
+        return fighterMoveStats.Get(moveInExecution)?.block ?? Block.None;
     }
 
     public void AddMoveToQueue(Move move)
@@ -99,8 +109,17 @@ public class Fighter : NetworkBehaviour
     private void ExecuteNextMoveInQueue()
     {
         Move move;
-        if (movesQueue.TryDequeue(out move) && stamina >= fighterMoveStats.Get(move).stamina)
+        if (movesQueue.TryDequeue(out move))
         {
+            if(stamina < fighterMoveStats.Get(move).stamina)
+            {
+                moveIsCombo = false;
+                moveInExecution = Move.None;
+                if (!isAI) audioManager.Play("Wrong");
+                return;
+            }
+
+
             if (move == moveInExecution && !moveIsCombo)
             {
                 moveIsCombo = true;
@@ -228,8 +247,8 @@ public class Fighter : NetworkBehaviour
 
     public void ResetStats()
     {
-        health = 100;
-        stamina = 100;
+        health = startHealth;
+        stamina = startStamina;
 
         foreach (var parametar in fighterAnimator.parameters)
         {

@@ -721,11 +721,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e485eb81d54d6d44951b559eb089ac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startHealth: 200
+  startStamina: 150
   health: 100
   stamina: 100
-  strength: 1.3
-  agility: 1.032
-  endurance: 1.23
+  strength: 1.5
+  agility: 1.25
+  endurance: 2.25
   isAI: 0
 --- !u!114 &-6642438610190157567
 MonoBehaviour:
@@ -739,6 +741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2212002164f24944f9b4cdea9d836255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  difficulty: 2
 --- !u!114 &182640187029183017
 MonoBehaviour:
   m_ObjectHideFlags: 0

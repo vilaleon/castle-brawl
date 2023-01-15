@@ -40,6 +40,21 @@ public class MenuUIHandler : MonoBehaviour
         menuAnimation = GetComponent<Animation>();
     }
 
+    public void WelcomeToBase()
+    {
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(WelcomeToBaseCoroutine());
+
+        IEnumerator WelcomeToBaseCoroutine()
+        {
+            yield return new WaitForSeconds(1f);
+            ChangeSection("Base");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
     public void BaseToSettings()
     {
         menuAnimation.Play("FadeOut");
@@ -196,20 +211,6 @@ public class MenuUIHandler : MonoBehaviour
         }
     }
 
-    public void FightWin()
-    {
-        ChangeSection("Win");
-        menuAnimation.Play("FadeIn");
-        GetComponent<CanvasGroup>().interactable = true;
-    }
-
-    public void FightLost()
-    {
-        ChangeSection("Lost");
-        menuAnimation.Play("FadeIn");
-        GetComponent<CanvasGroup>().interactable = true;
-    }
-
     public void FightToBase()
     {
         cameraAnimator.SetTrigger("FightToBase");
@@ -225,6 +226,97 @@ public class MenuUIHandler : MonoBehaviour
             menuAnimation.Play("FadeIn");
             GetComponent<CanvasGroup>().interactable = true;
         }
+    }
+
+    public void FightToMiniBoss()
+    {
+        gameManager.FightEndedCleanup();
+        gameManager.FighterSelected(gameManager.fighterIndex);
+
+        cameraAnimator.SetTrigger("FightToMiniBoss");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(FightToBossCoroutine());
+
+        IEnumerator FightToBossCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("");
+            gameManager.StartFight();
+        }
+    }
+
+    public void MiniBossToBase()
+    {
+        cameraAnimator.SetTrigger("MiniBossToBase");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        gameManager.FightEndedCleanup();
+        StartCoroutine(FightToBaseCoroutine());
+
+        IEnumerator FightToBaseCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("Base");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
+    public void MiniBossToBoss()
+    {
+        gameManager.FightEndedCleanup();
+        gameManager.FighterSelected(gameManager.fighterIndex);
+
+        cameraAnimator.SetTrigger("MiniBossToBoss");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        StartCoroutine(FightToBossCoroutine());
+
+        IEnumerator FightToBossCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("");
+            gameManager.StartFight();
+        }
+    }
+
+    public void BossToBase()
+    {
+        cameraAnimator.SetTrigger("BossToBase");
+        menuAnimation.Play("FadeOut");
+        GetComponent<CanvasGroup>().interactable = false;
+        gameManager.FightEndedCleanup();
+        StartCoroutine(FightToBaseCoroutine());
+
+        IEnumerator FightToBaseCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            ChangeSection("Base");
+            menuAnimation.Play("FadeIn");
+            GetComponent<CanvasGroup>().interactable = true;
+        }
+    }
+
+    public void FightWin()
+    {
+        ChangeSection("Win");
+        menuAnimation.Play("FadeIn");
+        GetComponent<CanvasGroup>().interactable = true;
+    }
+
+    public void FightLost()
+    {
+        ChangeSection("Lost");
+        menuAnimation.Play("FadeIn");
+        GetComponent<CanvasGroup>().interactable = true;
+    }
+
+    public void ContinueToNextFight()
+    {
+        if (gameManager.totalWins == 1) FightToMiniBoss();
+        else if (gameManager.totalWins == 2) MiniBossToBoss();
+        else BossToBase();
     }
 
     public void ExitGame()

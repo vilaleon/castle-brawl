@@ -5,6 +5,7 @@ using Unity.Netcode;
 public class PlayerController : NetworkBehaviour
 {
     private Fighter fighter;
+    private GameManager gameManager;
 
     private float pressDelay = 0.2f;
     private float pressDelayTimer = 0f;
@@ -12,6 +13,7 @@ public class PlayerController : NetworkBehaviour
 
     void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
         fighter = GetComponent<Fighter>();
     }
 
@@ -22,6 +24,7 @@ public class PlayerController : NetworkBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
 
         if (NetworkManager.IsListening && !NetworkManager.IsHost) horizontalInput = -horizontalInput;
+        if (Input.GetKeyDown(KeyCode.Escape)) gameManager.PauseGame();
 
         if (horizontalInput < 0)
         {
