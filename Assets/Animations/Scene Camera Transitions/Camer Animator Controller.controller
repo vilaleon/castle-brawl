@@ -337,7 +337,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -6136532473504791848}
-    m_Position: {x: -100, y: -40, z: 0}
+    m_Position: {x: -100, y: -70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5140775473710026252}
     m_Position: {x: 150, y: -150, z: 0}
@@ -348,12 +348,6 @@ AnimatorStateMachine:
     m_State: {fileID: 8761669435852227512}
     m_Position: {x: 150, y: -70, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -6907791704208461600}
-    m_Position: {x: 270, y: 10, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -6647748594700353099}
-    m_Position: {x: 790, y: 90, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: -2468730338918612863}
     m_Position: {x: 390, y: -70, z: 0}
   - serializedVersion: 1
@@ -361,30 +355,18 @@ AnimatorStateMachine:
     m_Position: {x: 150, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2619910926754445281}
-    m_Position: {x: 660, y: 170, z: 0}
+    m_Position: {x: 420, y: 30, z: 0}
+  m_ChildStateMachines:
   - serializedVersion: 1
-    m_State: {fileID: 5374856051728941511}
-    m_Position: {x: 270, y: 90, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 2127104885195580089}
-    m_Position: {x: 890, y: 10, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 7275454882974329183}
-    m_Position: {x: 1010, y: -140, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 7937808258746226697}
-    m_Position: {x: 580, y: 10, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 3144991964566376639}
-    m_Position: {x: 810, y: -80, z: 0}
-  m_ChildStateMachines: []
+    m_StateMachine: {fileID: 7576751928101690383}
+    m_Position: {x: 150, y: 30, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: -80, y: -150, z: 0}
-  m_EntryPosition: {x: -80, y: -100, z: 0}
-  m_ExitPosition: {x: 720, y: -150, z: 0}
+  m_AnyStatePosition: {x: 640, y: -130, z: 0}
+  m_EntryPosition: {x: -80, y: -130, z: 0}
+  m_ExitPosition: {x: 640, y: -70, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -6136532473504791848}
 --- !u!1101 &-2139143823928724284
@@ -451,79 +433,79 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: TrainingToBase
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: BaseToSelection
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: SelectionToFight
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: FightToBase
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: SelectionToBase
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: BaseToLobby
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: LobbyToBase
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: LobbyToFight
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: BossToBase
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: FightToMiniBoss
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: MiniBossToBoss
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: MiniBossToBase
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -944,6 +926,46 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1107 &7576751928101690383
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FightSubstate
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: -6907791704208461600}
+    m_Position: {x: 200, y: 100, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 5374856051728941511}
+    m_Position: {x: 200, y: -40, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 7937808258746226697}
+    m_Position: {x: 500, y: -40, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -6647748594700353099}
+    m_Position: {x: 500, y: 100, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 2127104885195580089}
+    m_Position: {x: 720, y: -150, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3144991964566376639}
+    m_Position: {x: 770, y: -40, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 7275454882974329183}
+    m_Position: {x: 960, y: -150, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: -30, y: -40, z: 0}
+  m_EntryPosition: {x: 220, y: 50, z: 0}
+  m_ExitPosition: {x: 980, y: 100, z: 0}
+  m_ParentStateMachinePosition: {x: -50, y: 10, z: 0}
+  m_DefaultState: {fileID: -6907791704208461600}
 --- !u!1102 &7603520445650563326
 AnimatorState:
   serializedVersion: 6

@@ -192,8 +192,16 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            audioManager.Play("Victory");
-            fightTextObject.GetComponent<TextMeshProUGUI>().text = "Victory";
+            if (player.health == player.startHealth)
+            {
+                audioManager.Play("Flawless");
+                fightTextObject.GetComponent<TextMeshProUGUI>().text = "Flawless";
+            }
+            else
+            {
+                audioManager.Play("Victory");
+                fightTextObject.GetComponent<TextMeshProUGUI>().text = "Victory";
+            }
             fightTextObject.GetComponent<CanvasGroup>().alpha = 1;
             playerCounter.text = (++playerWins).ToString();
             player.Celebration();
