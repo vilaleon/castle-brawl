@@ -184,14 +184,24 @@ public class GameManager : NetworkBehaviour
 
         if (tag == "Player")
         {
-            audioManager.Play("GameOver");
-            fightTextObject.GetComponent<TextMeshProUGUI>().text = "Game Over";
+            enemyWins++;
+            if (enemyWins == 3)
+            {
+                audioManager.Play("GameOver");
+                fightTextObject.GetComponent<TextMeshProUGUI>().text = "Game Over";
+            }
+            else
+            {
+                audioManager.Play("Lose");
+                fightTextObject.GetComponent<TextMeshProUGUI>().text = "Round Lost";
+            }
             fightTextObject.GetComponent<CanvasGroup>().alpha = 1;
-            enemyCounter.text = (++enemyWins).ToString();
+            enemyCounter.text = enemyWins.ToString();
             enemy.Celebration();
         }
         else
         {
+            playerWins++;
             if (player.health == player.startHealth)
             {
                 audioManager.Play("Flawless");
@@ -199,11 +209,20 @@ public class GameManager : NetworkBehaviour
             }
             else
             {
-                audioManager.Play("Victory");
-                fightTextObject.GetComponent<TextMeshProUGUI>().text = "Victory";
-            }
+                if (playerWins == 3)
+                {
+                    audioManager.Play("Victory");
+                    fightTextObject.GetComponent<TextMeshProUGUI>().text = "Victory";
+                }
+                else
+                {
+                    audioManager.Play("Win");
+                    fightTextObject.GetComponent<TextMeshProUGUI>().text = "Round Won";
+                }
+
+                }
             fightTextObject.GetComponent<CanvasGroup>().alpha = 1;
-            playerCounter.text = (++playerWins).ToString();
+            playerCounter.text = playerWins.ToString();
             player.Celebration();
         }
 
